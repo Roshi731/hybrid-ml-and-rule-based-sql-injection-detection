@@ -1,244 +1,70 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>E-Commerce Demo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SQLiGuard – Welcome</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <style>
-    body{ font-family: Arial; margin:0; background:#f5f5f5; }
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:#f1f3f6;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
 
-    /* Login */
-    #loginPage,#dashboard{ display:none; }
-    .card{
-      width:320px; margin:90px auto; padding:25px;
-      background:#fff; border-radius:12px;
-      box-shadow:0 5px 25px rgba(0,0,0,.1);
-    }
-    input{
-      width:100%; padding:10px;
-      margin:10px 0; border-radius:8px;
-      border:1px solid #ccc;
-    }
-    button{
-      cursor:pointer; border:none;
-      border-radius:8px; padding:10px;
-      font-weight:600;
-    }
-    .loginBtn{ width:100%; background:#2874F0; color:#fff; }
+.container{
+  background:#ffffff;
+  padding:30px 35px;
+  border-radius:14px;
+  text-align:center;
+  box-shadow:0 8px 18px rgba(0,0,0,.15);
+}
 
-    /* ---- DASHBOARD ---- */
+.title{
+  font-size:26px;
+  font-weight:700;
+  margin-bottom:25px;
+  color:#2874F0;
+}
 
-    .topbar{
-      background:#2874F0;
-      padding:12px 18px;
-      display:flex;
-      align-items:center;
-      gap:12px;
-      box-shadow:0 2px 10px rgba(0,0,0,.15);
-    }
+.btn{
+  width:200px;
+  padding:12px;
+  margin:8px 0;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+}
 
-    .topbar h3{
-      color:#fff;
-      margin:0 8px 0 0;
-      font-weight:600;
-    }
+.loginBtn{
+  background:#2874F0;
+  color:#fff;
+}
 
-    /* Flipkart-style search bar */
-    .searchWrapper{
-      flex:1;
-      display:flex;
-      align-items:center;
-      background:#fff;
-      border-radius:6px;
-      overflow:hidden;
-    }
-    .searchBox{
-      flex:1;
-      padding:10px 12px;
-      border:none;
-      outline:none;
-      font-size:14px;
-    }
-    .searchBtn{
-      background:#FFE500;
-      padding:10px 14px;
-      font-weight:600;
-    }
-
-    /* Logout pinned right */
-    .logoutBtn{
-      margin-left:auto;
-      background:#ff4d4d;
-      color:#fff;
-      padding:8px 14px;
-      border-radius:8px;
-    }
-
-    /* Products grid */
-    .products{
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
-      gap:15px;
-      padding:20px;
-    }
-    .product{
-      background:#fff;
-      border-radius:12px;
-      text-align:center;
-      padding:12px;
-      cursor:pointer;
-      transition:.2s;
-      box-shadow:0 3px 10px rgba(0,0,0,.08);
-    }
-    .product:hover{ transform:translateY(-4px); }
-    .product img{
-      width:120px;
-      height:120px;
-      object-fit:cover;
-      border-radius:10px;
-    }
-
-    /* Product Modal */
-    .modal{
-      display:none;
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.6);
-      justify-content:center;
-      align-items:center;
-    }
-    .modalContent{
-      background:#fff;
-      width:320px;
-      padding:18px;
-      border-radius:14px;
-      text-align:center;
-    }
-    .closeBtn{
-      background:#ff4d4d;
-      color:#fff;
-      margin-top:10px;
-      width:100%;
-    }
-  </style>
+.signupBtn{
+  background:#FFE500;
+}
+</style>
 </head>
 
 <body>
 
-<!-- ========== LOGIN PAGE ========== -->
-<div id="loginPage" class="card">
-  <h2>Login</h2>
-  <input id="username" placeholder="Username">
-  <input id="password" type="password" placeholder="Password">
-  <button class="loginBtn" onclick="login()">Login</button>
+<div class="container">
+  <div class="title">SQLiGuard</div>
+
+  <button class="btn loginBtn" onclick="location.href='login.html'">
+    Login
+  </button>
+
+  <button class="btn signupBtn" onclick="location.href='signup.html'">
+    Signup
+  </button>
 </div>
-
-<!-- ========== DASHBOARD ========== -->
-<div id="dashboard">
-
-  <div class="topbar">
-    <h3>My Store</h3>
-
-    <div class="searchWrapper">
-      <input id="searchBar"
-             class="searchBox"
-             placeholder="Search for products, brands and more..."
-             onkeyup="filterProducts()">
-      <button class="searchBtn">Search</button>
-    </div>
-
-    <button class="logoutBtn" onclick="logout()">Logout</button>
-  </div>
-
-  <div id="productList" class="products"></div>
-</div>
-
-<!-- ========== PRODUCT DETAILS MODAL ========== -->
-<div id="productModal" class="modal" onclick="closeModal(event)">
-  <div class="modalContent" id="modalContent"></div>
-</div>
-
-<script>
-  // --- Product Data (you can replace or fetch from backend later)
-  const products = [
-    { id:1, name:"Wireless Headphones", price:2999, img:"https://via.placeholder.com/150", desc:"High-quality Bluetooth headphones" },
-    { id:2, name:"Smart Watch", price:1999, img:"https://via.placeholder.com/150", desc:"Fitness & activity tracker" },
-    { id:3, name:"Running Shoes", price:1499, img:"https://via.placeholder.com/150", desc:"Lightweight comfortable shoes" },
-    { id:4, name:"Travel Backpack", price:999, img:"https://via.placeholder.com/150", desc:"Durable waterproof backpack" }
-  ];
-
-  const loginPage = document.getElementById("loginPage");
-  const dashboard = document.getElementById("dashboard");
-  const productList = document.getElementById("productList");
-  const modal = document.getElementById("productModal");
-  const modalContent = document.getElementById("modalContent");
-
-  // show login first
-  loginPage.style.display="block";
-
-  function login(){
-    const user = username.value.trim();
-    const pass = password.value.trim();
-
-    if(user && pass){
-      loginPage.style.display="none";
-      dashboard.style.display="block";
-      loadProducts();
-    } else {
-      alert("Enter username & password");
-    }
-  }
-
-  function logout(){
-    dashboard.style.display="none";
-    loginPage.style.display="block";
-    username.value = "";
-    password.value = "";
-  }
-
-  // render products
-  function loadProducts(list = products){
-    productList.innerHTML = "";
-    list.forEach(p=>{
-      const card = document.createElement("div");
-      card.className="product";
-      card.innerHTML = `
-        <img src="${p.img}">
-        <h4>${p.name}</h4>
-        <p>₹ ${p.price}</p>
-      `;
-      card.onclick = ()=>showProduct(p);
-      productList.appendChild(card);
-    });
-  }
-
-  // search filter (Flipkart style)
-  function filterProducts(){
-    const q = searchBar.value.toLowerCase();
-    const filtered = products.filter(p =>
-      p.name.toLowerCase().includes(q)
-    );
-    loadProducts(filtered);
-  }
-
-  // show product details popup
-  function showProduct(p){
-    modalContent.innerHTML = `
-      <img src="${p.img}" style="width:150px;height:150px;object-fit:cover;border-radius:10px;">
-      <h3>${p.name}</h3>
-      <p>${p.desc}</p>
-      <h4>₹ ${p.price}</h4>
-      <button class="closeBtn" onclick="modal.style.display='none'">Close</button>
-    `;
-    modal.style.display="flex";
-  }
-
-  function closeModal(e){
-    if(e.target === modal){
-      modal.style.display="none";
-    }
-  }
-</script>
 
 </body>
 </html>
